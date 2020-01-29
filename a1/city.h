@@ -33,9 +33,6 @@ class City : public Building {
     gpuProgram->drawVertices( &verts[0], 4, GL_LINE_LOOP, vec3(1,1,1) );
   }
 
-bool isHit(vec3 missilePos, float radius) {
-    return (missilePos - pos).length() <= radius;
-  }
 };
   
 

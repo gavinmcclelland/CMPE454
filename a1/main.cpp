@@ -63,8 +63,8 @@ void mouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
 
     // Calculate the world coordinates of mouse (x,y)
 
-   // float wx = x; // (wrong)
-   // float wy = y;
+    // float wx = x; // (wrong)
+    // float wy = y;
     
     float wx = x/WINDOW_WIDTH * (WORLD_RIGHT - WORLD_LEFT)+WORLD_LEFT;
     float wy = (1-y/WINDOW_HEIGHT) * (worldTop - WORLD_BOTTOM)+WORLD_BOTTOM;
