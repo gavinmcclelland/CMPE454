@@ -62,7 +62,7 @@ void State::updateState( float deltaT )
   if (randIn01()+currentTime/1000 > 0.99) {	// New missile 
 
     missilesIn.add( Missile( vec3( randIn01(), worldTop, 0), // source
-			     vec3( -0.02, -0.1, 0 ),         // velocity
+			     vec3( randIn01()*0.2 - 0.1, -0.1, 0 ),         // velocity
 			     0,                              // destination y
 			     vec3( 1,1,0 ) ) );              // colour
   }
@@ -88,26 +88,30 @@ void State::updateState( float deltaT )
 
   // Look for terminating explosions
 
-  for (i=0; i<explosions.size(); i++)
+  for (i=0; i<explosions.size(); i++) {
     if (explosions[i].radius() >= explosions[i].maxRadius()) {
       // CHANGE THIS: CHECK FOR DESTROYED CITY OR SILO
       for(int city = 0; city < cities.size(); city++) {
       	if(cities[city].isHit(explosions[i].position(),explosions[i].radius()))
-		cities.remove(city);
-        }
+	  	    cities.remove(city);
+      }
       for(int silo = 0; silo < silos.size(); silo++) {
       	if(silos[silo].isHit(explosions[i].position(), explosions[i].radius()))
-		silos.remove(silo);
+          silos.remove(silo);
+      }
+      for(int missIn=0; missIn < missilesIn.size(); missIn++){
+        if((missilesIn[missIn].position() - explosions[i].position()).length() <= explosions[i].radius())
+          missilesIn.remove(missIn);
       }
       explosions.remove(i);
       i--;
     }
-
+  }
   // Look for incoming missiles that hit an explosion and are
   // destroyed
 
   // ADD CODE HERE
-
+  
   // Update all the moving objects
 
   for (i=0; i<missilesIn.size(); i++)

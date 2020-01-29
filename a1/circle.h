@@ -35,7 +35,7 @@ class Circle {
     verts[0] = pos;
     
     for (int i=0; i<NUM_SEGMENTS; i++) {
-      float theta = (i/(float)(NUM_SEGMENTS-1)) * (2*M_PI);
+      float theta = (i/(float)(NUM_SEGMENTS-2)) * (2*M_PI);
       verts[i+1] = vec3( pos.x + r * sin(theta), pos.y + r * cos(theta), 0 );
     }
 

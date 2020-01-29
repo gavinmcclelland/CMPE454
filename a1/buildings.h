@@ -25,9 +25,6 @@ class Building {
 
   virtual void draw( GPUProgram *gpuProgram ) = 0;
 
-  bool isHit(vec3 missilePos, float radius) {
-    return (missilePos - pos).length() <= radius;
-  }
 
  protected:
 
