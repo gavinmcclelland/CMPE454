@@ -45,10 +45,11 @@ void State::draw()
 // CHANGE ALL OF THIS FUNCTION
 
 
-void State::updateState( float deltaT )
+bool State::updateState( float deltaT )
 
 {
   int i;
+  bool dead = false;
 
   // Update the time
 
@@ -97,7 +98,7 @@ void State::updateState( float deltaT )
       }
       for(int silo = 0; silo < silos.size(); silo++) {
       	if(silos[silo].isHit(explosions[i].position(), explosions[i].radius()))
-          silos.remove(silo);
+          silos[silo].destroy();
       }
       for(int missIn=0; missIn < missilesIn.size(); missIn++){
         if((missilesIn[missIn].position() - explosions[i].position()).length() <= explosions[i].radius())
@@ -107,6 +108,17 @@ void State::updateState( float deltaT )
       i--;
     }
   }
+
+  bool surviving = false;
+
+  for(i=0;i<silos.size();i++){
+    if(silos[i].isAlive())
+      surviving = true;
+  }
+  if (cities.size() == 0 && !surviving){
+    dead = true;
+  }
+
   // Look for incoming missiles that hit an explosion and are
   // destroyed
 
@@ -122,6 +134,8 @@ void State::updateState( float deltaT )
 
   for (i=0; i<explosions.size(); i++)
     explosions[i].expand( deltaT );
+
+  return dead;
 }
 
 

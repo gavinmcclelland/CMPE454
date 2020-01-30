@@ -31,7 +31,7 @@ class State {
   void setupWorld();
   void draw();
   void fireMissile( int siloIndex, float x, float y );
-  void updateState( float deltaT );
+  bool updateState( float deltaT );
 
  private:
 
