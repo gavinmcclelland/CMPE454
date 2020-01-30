@@ -17,6 +17,7 @@
 #define WORLD_BOTTOM -0.02
 float worldTop;			// set in main()
 
+
 // The "state" contains the world and manages all actions.
 
 #include "state.h"
@@ -139,6 +140,11 @@ int main( int argc, char **argv )
   struct timeb prevTime, thisTime; // record the last rendering time
   ftime( &prevTime );
 
+  int highScore = 0;
+  bool run = true;
+
+
+
   while (!glfwWindowShouldClose( window )) {
 
     // Find elapsed time since last render
@@ -148,9 +154,13 @@ int main( int argc, char **argv )
     prevTime = thisTime;
 
     // Update the world state
-
-    state->updateState( elapsedSeconds );
-
+    highScore += elapsedSeconds;
+    if (run && state->updateState( elapsedSeconds ))
+    {
+      std::cout << "High Score: " << highScore << "s" << std::endl;
+      run = false;
+      highScore = 0;
+    }
     // Clear, display, and check for events
 
     glClearColor( 0.0, 0.0, 0.0, 0.0 );

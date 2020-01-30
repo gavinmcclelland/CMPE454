@@ -59,7 +59,7 @@ bool State::updateState( float deltaT )
   // should increase with time.
   //
   // CHANGE THIS
-  std::cout << "Time: " << currentTime << std::endl;
+  // std::cout << "Time: " << currentTime << std::endl;
   if (randIn01()+currentTime/1000 > 0.99) {	// New missile 
 
     missilesIn.add( Missile( vec3( randIn01(), worldTop, 0), // source
@@ -74,7 +74,7 @@ bool State::updateState( float deltaT )
     if (missilesIn[i].hasReachedDestination()) {
       // CHANGE THIS: ADD AN EXPLOSION
       // draw circle
-      explosions.add(Circle(missilesIn[i].position(), 0.1, 0.05, vec3(1,0,0)));
+      explosions.add(Circle(missilesIn[i].position(), 0.07, 0.05, vec3(1,0,0)));
       missilesIn.remove(i);
       i--;
     }
@@ -82,7 +82,7 @@ bool State::updateState( float deltaT )
   for (i=0; i<missilesOut.size(); i++)
     if (missilesOut[i].hasReachedDestination()) {
       // CHANGE THIS: ADD AN EXPLOSION
-      explosions.add(Circle(missilesOut[i].position(), 0.1, 0.05, vec3(0,0,1)));
+      explosions.add(Circle(missilesOut[i].position(), 0.07, 0.05, vec3(0,0,1)));
       missilesOut.remove(i);
       i--;
     }
@@ -90,20 +90,24 @@ bool State::updateState( float deltaT )
   // Look for terminating explosions
 
   for (i=0; i<explosions.size(); i++) {
-    if (explosions[i].radius() >= explosions[i].maxRadius()) {
-      // CHANGE THIS: CHECK FOR DESTROYED CITY OR SILO
-      for(int city = 0; city < cities.size(); city++) {
-      	if(cities[city].isHit(explosions[i].position(),explosions[i].radius()))
-	  	    cities.remove(city);
+    
+    // CHANGE THIS: CHECK FOR DESTROYED CITY OR SILO
+    for(int city = 0; city < cities.size(); city++) {
+      if(cities[city].isHit(explosions[i].position(),explosions[i].radius()))
+        cities.remove(city);
+    }
+    for(int silo = 0; silo < silos.size(); silo++) {
+      if(silos[silo].isHit(explosions[i].position(), explosions[i].radius()))
+        silos[silo].destroy();
+    }
+    for(int missIn=0; missIn < missilesIn.size(); missIn++){
+      if((missilesIn[missIn].position() - explosions[i].position()).length() <= explosions[i].radius())
+      {
+        explosions.add(Circle(missilesIn[missIn].position(), 0.07, 0.05, vec3(1,0,0)));
+        missilesIn.remove(missIn);
       }
-      for(int silo = 0; silo < silos.size(); silo++) {
-      	if(silos[silo].isHit(explosions[i].position(), explosions[i].radius()))
-          silos[silo].destroy();
-      }
-      for(int missIn=0; missIn < missilesIn.size(); missIn++){
-        if((missilesIn[missIn].position() - explosions[i].position()).length() <= explosions[i].radius())
-          missilesIn.remove(missIn);
-      }
+    }
+      if (explosions[i].radius() >= explosions[i].maxRadius()) {
       explosions.remove(i);
       i--;
     }
@@ -156,7 +160,6 @@ void State::fireMissile( int siloIndex, float x, float y )
 			      speed * (vec3(x,y,0) - silos[siloIndex].position()).normalize(),  // velocity
 			      y,		                     				// destination y
 			      vec3( 0,1,1 ) ) );                     				// colour
-	cout << silos[siloIndex].position() << ", " << speed * (vec3(x,y,0) - silos[siloIndex].position()).normalize() << ", " << y << endl; 
  }
 }
 
