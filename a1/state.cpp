@@ -82,7 +82,7 @@ bool State::updateState( float deltaT )
   for (i=0; i<missilesOut.size(); i++)
     if (missilesOut[i].hasReachedDestination()) {
       // CHANGE THIS: ADD AN EXPLOSION
-      explosions.add(Circle(missilesOut[i].position(), 0.1, 0.05, vec3(1,0,0)));
+      explosions.add(Circle(missilesOut[i].position(), 0.1, 0.05, vec3(0,0,1)));
       missilesOut.remove(i);
       i--;
     }
