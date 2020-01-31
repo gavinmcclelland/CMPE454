@@ -140,7 +140,7 @@ int main( int argc, char **argv )
   struct timeb prevTime, thisTime; // record the last rendering time
   ftime( &prevTime );
 
-  int highScore = 0;
+  float highScore = 0;
   bool run = true;
 
 

@@ -27,16 +27,22 @@ class Missile {
   // Draw the missile and its trail
 
   void draw( GPUProgram *gpuProgram) {
-
-    vec3 verts[5] = {
-      vec3( pos0.x, pos0.y, 0 ),
-      vec3( pos1.x, pos1.y, 0 ),
-      vec3( pos1.x + 0.015, pos1.y, 0 ),
-      vec3( pos1.x - 0.015, pos1.y, 0 ),
-      vec3( pos1.x, pos1.y + 0.3, 0 )
-    };
-
-    gpuProgram->drawVertices( &verts[0], 5, GL_LINES, colour );
+    vec3 verts[8] = {
+        vec3( pos0.x, pos0.y, 0 ),
+        vec3( pos1.x, pos1.y, 0 ),
+        vec3( pos1.x + 0.015, pos1.y, 0 ),
+        vec3( pos1.x - 0.015, pos1.y, 0 ),
+        vec3( pos1.x - 0.020, pos1.y, 0 ),
+        vec3( pos1.x, pos1.y - 0.03, 0 ),
+        vec3( pos1.x + 0.020, pos1.y, 0 ),
+        vec3( pos1.x, pos1.y - 0.03, 0 )
+      };
+    if (velocity[1] > 0)
+    {
+      verts[5] = vec3( pos1.x, pos1.y + 0.03, 0 );
+      verts[7] = vec3( pos1.x, pos1.y + 0.03, 0 );
+    }
+    gpuProgram->drawVertices( &verts[0], 8, GL_LINES, colour );
   }
 
   // Move the missile over a time interval, deltaT
