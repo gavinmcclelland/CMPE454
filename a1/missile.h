@@ -28,12 +28,15 @@ class Missile {
 
   void draw( GPUProgram *gpuProgram) {
 
-    vec3 verts[2] = {
+    vec3 verts[5] = {
       vec3( pos0.x, pos0.y, 0 ),
-      vec3( pos1.x, pos1.y, 0 )
+      vec3( pos1.x, pos1.y, 0 ),
+      vec3( pos1.x + 0.015, pos1.y, 0 ),
+      vec3( pos1.x - 0.015, pos1.y, 0 ),
+      vec3( pos1.x, pos1.y + 0.3, 0 )
     };
 
-    gpuProgram->drawVertices( &verts[0], 2, GL_LINES, colour );
+    gpuProgram->drawVertices( &verts[0], 5, GL_LINES, colour );
   }
 
   // Move the missile over a time interval, deltaT

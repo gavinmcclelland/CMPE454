@@ -61,7 +61,7 @@ class Silo : public Building {
         float theta = (i/(float)(NUM_SEGMENTS*3-1)) * M_PI;
         verts[i+1] = vec3( pos.x + 0.04 * cos(theta), pos.y + 0.04 * sin(theta), 0 );
       }
-      gpuProgram->drawVertices( verts, NUM_SEGMENTS+1, GL_TRIANGLE_FAN, vec3(1,0,1) );
+      gpuProgram->drawVertices( verts, NUM_SEGMENTS+1, GL_TRIANGLE_FAN, vec3(1,0,0) );
     }
     
 

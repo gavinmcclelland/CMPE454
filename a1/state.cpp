@@ -65,7 +65,7 @@ bool State::updateState( float deltaT )
     missilesIn.add( Missile( vec3( randIn01(), worldTop, 0), // source
 			     vec3( randIn01()*0.2 - 0.1, -0.1, 0 ),         // velocity
 			     0,                              // destination y
-			     vec3( 1,1,0 ) ) );              // colour
+			     vec3( 1,0.5,0) ) );              // colour
   }
 
   // Look for terminating missiles
@@ -73,8 +73,8 @@ bool State::updateState( float deltaT )
   for (i=0; i<missilesIn.size(); i++)
     if (missilesIn[i].hasReachedDestination()) {
       // CHANGE THIS: ADD AN EXPLOSION
-      // draw circle
-      explosions.add(Circle(missilesIn[i].position(), 0.07, 0.05, vec3(1,0,0)));
+      // light red explosions indicate enemy missiles
+      explosions.add(Circle(missilesIn[i].position(), 0.07, 0.05, vec3(1,0.5,0.5)));
       missilesIn.remove(i);
       i--;
     }
@@ -82,7 +82,8 @@ bool State::updateState( float deltaT )
   for (i=0; i<missilesOut.size(); i++)
     if (missilesOut[i].hasReachedDestination()) {
       // CHANGE THIS: ADD AN EXPLOSION
-      explosions.add(Circle(missilesOut[i].position(), 0.07, 0.05, vec3(0,0,1)));
+      // Light blue explosions indicate friendly explosions
+      explosions.add(Circle(missilesOut[i].position(), 0.07, 0.05, vec3(0.5,0.5,1)));
       missilesOut.remove(i);
       i--;
     }
@@ -92,17 +93,30 @@ bool State::updateState( float deltaT )
   for (i=0; i<explosions.size(); i++) {
     
     // CHANGE THIS: CHECK FOR DESTROYED CITY OR SILO
+    
+    // if a city is hit, remove it
     for(int city = 0; city < cities.size(); city++) {
       if(cities[city].isHit(explosions[i].position(),explosions[i].radius()))
         cities.remove(city);
     }
+
+    // NOTE: AS SPECIFIED, REMOVE A SILO AT THAT INDEX
+    // UN-COMMENT THE LINES BELOW TO SEE THE BEHAVIOUR AS SPECIFIED
+    // FOR PART 4c
+    // for(int silo = 0; silo < silos.size(); silo++) {
+    //   if(silos[silo].isHit(explosions[i].position(), explosions[i].radius()))
+    //     silos.remove(silo);
+    // }
+
+    // As an added novel feature, "Destroy" a silo
+    // This makes the silo that is hit become a smaller wedge and turn red to indicate damage
     for(int silo = 0; silo < silos.size(); silo++) {
       if(silos[silo].isHit(explosions[i].position(), explosions[i].radius()))
         silos[silo].destroy();
     }
     for(int missIn=0; missIn < missilesIn.size(); missIn++){
       if((missilesIn[missIn].position() - explosions[i].position()).length() <= explosions[i].radius())
-      {
+      { // added chain reaction explosions, missile collisions are bright red
         explosions.add(Circle(missilesIn[missIn].position(), 0.07, 0.05, vec3(1,0,0)));
         missilesIn.remove(missIn);
       }
@@ -156,10 +170,10 @@ void State::fireMissile( int siloIndex, float x, float y )
 
     // CHANGE THIS
 
-    missilesOut.add( Missile( silos[siloIndex].position(),           				// source
+    missilesOut.add( Missile( silos[siloIndex].position(),           				  // source
 			      speed * (vec3(x,y,0) - silos[siloIndex].position()).normalize(),  // velocity
-			      y,		                     				// destination y
-			      vec3( 0,1,1 ) ) );                     				// colour
+			      y,		                     			                                	// destination y
+			      vec3( 0,0.5,1 ) ) );                     		                    	// colour
  }
 }
 
