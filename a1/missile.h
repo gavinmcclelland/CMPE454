@@ -33,14 +33,14 @@ class Missile {
         vec3( pos1.x + 0.015, pos1.y, 0 ),
         vec3( pos1.x - 0.015, pos1.y, 0 ),
         vec3( pos1.x - 0.020, pos1.y, 0 ),
-        vec3( pos1.x, pos1.y - 0.03, 0 ),
+        vec3( pos1.x+float(velocity[0])/2, pos1.y - 0.03, 0 ),
         vec3( pos1.x + 0.020, pos1.y, 0 ),
-        vec3( pos1.x, pos1.y - 0.03, 0 )
+        vec3( pos1.x+float(velocity[0])/2, pos1.y - 0.03, 0 )
       };
     if (velocity[1] > 0)
     {
-      verts[5] = vec3( pos1.x, pos1.y + 0.03, 0 );
-      verts[7] = vec3( pos1.x, pos1.y + 0.03, 0 );
+      verts[5] = vec3( pos1.x+float(velocity[0])/4, pos1.y + 0.03, 0 );
+      verts[7] = vec3( pos1.x+float(velocity[0])/4, pos1.y + 0.03, 0 );
     }
     gpuProgram->drawVertices( &verts[0], 8, GL_LINES, colour );
   }
