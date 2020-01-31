@@ -60,6 +60,7 @@ bool State::updateState( float deltaT )
   //
   // CHANGE THIS
   // std::cout << "Time: " << currentTime << std::endl;
+  // Part 4a: Increase number of incoming missiles with time
   if (randIn01()+currentTime/1000 > 0.99) {	// New missile 
 
     missilesIn.add( Missile( vec3( randIn01(), worldTop, 0), // source
@@ -69,7 +70,7 @@ bool State::updateState( float deltaT )
   }
 
   // Look for terminating missiles
-
+  // Part 4b: Add explosions
   for (i=0; i<missilesIn.size(); i++)
     if (missilesIn[i].hasReachedDestination()) {
       // CHANGE THIS: ADD AN EXPLOSION
@@ -108,12 +109,14 @@ bool State::updateState( float deltaT )
     //     silos.remove(silo);
     // }
 
-    // As an added novel feature, "Destroy" a silo
-    // This makes the silo that is hit become a smaller wedge and turn red to indicate damage
+    // NOVEL FEATURE #1: "Destroy" a silo
+    // This makes the silo that is hit become a smaller "wedge" and turn red to indicate damage
     for(int silo = 0; silo < silos.size(); silo++) {
       if(silos[silo].isHit(explosions[i].position(), explosions[i].radius()))
         silos[silo].destroy();
     }
+
+    // Part 4d: Remove a missile if destroyed by an explosion
     for(int missIn=0; missIn < missilesIn.size(); missIn++){
       if((missilesIn[missIn].position() - explosions[i].position()).length() <= explosions[i].radius())
       { // added chain reaction explosions, missile collisions are bright red
@@ -169,7 +172,7 @@ void State::fireMissile( int siloIndex, float x, float y )
     silos[siloIndex].decrMissiles();
 
     // CHANGE THIS
-
+    // Part 3: Add an outgoing missile at location of mouse click
     missilesOut.add( Missile( silos[siloIndex].position(),           				  // source
 			      speed * (vec3(x,y,0) - silos[siloIndex].position()).normalize(),  // velocity
 			      y,		                     			                                	// destination y

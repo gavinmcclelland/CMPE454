@@ -25,13 +25,15 @@ class Missile {
   }
 
   // Draw the missile and its trail
-
+  // NOVEL FEATURE 2: Draw triangular tips for incoming and outgoing missiles
+  //                  depending on the orientation, destination also changed
+  //                  to the tip of the triangle
   void draw( GPUProgram *gpuProgram) {
     vec3 verts[8] = {
         vec3( pos0.x, pos0.y, 0 ),
         vec3( pos1.x, pos1.y, 0 ),
-        vec3( pos1.x + 0.015, pos1.y, 0 ),
-        vec3( pos1.x - 0.015, pos1.y, 0 ),
+        vec3( pos1.x + 0.020, pos1.y, 0 ),
+        vec3( pos1.x - 0.020, pos1.y, 0 ),
         vec3( pos1.x - 0.020, pos1.y, 0 ),
         vec3( pos1.x+float(velocity[0])/2, pos1.y - 0.03, 0 ),
         vec3( pos1.x + 0.020, pos1.y, 0 ),
@@ -54,12 +56,17 @@ class Missile {
   // Return the current position 
 
   vec3 position() {
-    return pos1;
+    if(velocity[1] > 0)
+      return vec3( pos1.x+float(velocity[0])/4, pos1.y + 0.03, 0 );
+    else
+      return vec3( pos1.x+float(velocity[0])/2, pos1.y - 0.03, 0 );
+    // return pos1;
   }
 
   // Has the missile reached its destination?
 
   bool hasReachedDestination() { 
+    // Part 2
     // if the missile is moving upward, check if it is past destination
     if (velocity.y > 0){
   	return pos1.y >= destY;

@@ -67,9 +67,10 @@ void mouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
     // float wx = x; // (wrong)
     // float wy = y;
     
+    // Part 1: fix world coordinates
     float wx = x/WINDOW_WIDTH * (WORLD_RIGHT - WORLD_LEFT)+WORLD_LEFT;
     float wy = (1-y/WINDOW_HEIGHT) * (worldTop - WORLD_BOTTOM)+WORLD_BOTTOM;
-    std::cout << x << "=>" << wx  << '\t' << y << "=>" << wy << std::endl;   
+    // std::cout << x << "=>" << wx  << '\t' << y << "=>" << wy << std::endl; // used to test accuracy of mouse click 
 
 // Shoot from silo 0, 1, or 2
 
