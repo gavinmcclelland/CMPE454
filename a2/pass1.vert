@@ -26,5 +26,5 @@ void main()
 
   // TODO: Calculate depth
   // There should be an equation from lecture to help with this
-  ccsLightDepth = 1.0; // CHANGE THIS
+  ccsLightDepth = ((ccsLightPos.z/ccsLightPos.w)+1.0)/2.0; // CHANGE THIS
 }

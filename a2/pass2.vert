@@ -43,7 +43,7 @@ void main()
 
   // Calculate position in WCS
 
-  wcsPosition = vec3(1,0,0);	// CHANGE THIS
+  wcsPosition = vec3(OCS_to_WCS*vec4(vertPosition,1));	// CHANGE THIS
 
   // Copy texture coords to frag shader
 
