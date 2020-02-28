@@ -25,7 +25,7 @@ void main()
 {
   // calculate vertex position in eye's CCS.  Store this in gl_Position.
 
-  gl_Position = OCS_to_CCS*vec4(vertPosition,1);   // CHANGE THIS 
+  gl_Position = OCS_to_CCS*vec4(vertPosition,1);   // CHANGED
   // Divided by 1 (w = 1) since it's a position
 
   // FROM ASSIGNMENT OUTLINE
@@ -35,15 +35,15 @@ void main()
     // pass2.frag.
 
   // Use provided uniform value
-  colour = kd;		// CHANGE THIS
+  colour = kd;		// CHANGED
 
   // calculate normal in WCS.  (Do not divide by w since this is a direction and w = 0.)
   
-  normal = vec3(OCS_to_WCS*vec4(vertNormal,0));		// CHANGE THIS
+  normal = vec3(OCS_to_WCS*vec4(vertNormal,0));		// CHANGED
 
   // Calculate position in WCS
 
-  wcsPosition = vec3(OCS_to_WCS*vec4(vertPosition,1));	// CHANGE THIS
+  wcsPosition = vec3(OCS_to_WCS*vec4(vertPosition,1));	// CHANGED
 
   // Copy texture coords to frag shader
 
