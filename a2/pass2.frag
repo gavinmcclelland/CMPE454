@@ -26,42 +26,53 @@ uniform vec3 ks;
 uniform vec3 Ia;
 uniform vec3 Ie;
 uniform float shininess;
+uniform vec3 Iin;
 
 void main()
 
 {
   // Calculate the position of this fragment in the light's CCS.
 
-  vec4 ccsLightPos = WCS_to_lightCCS * vec4(wcsPosition, 1); // CHANGE THIS
+  vec4 ccsLightPos = WCS_to_lightCCS * vec4(wcsPosition, 1); // CHANGED
 
   // Calculate the depth of this fragment in the light's CCS in the range [0,1]
   
-  float fragDepth = ((ccsLightPos.z/ccsLightPos.w)+1.0)/2.0;; // CHANGE THIS
+  float fragDepth = ((ccsLightPos.z/ccsLightPos.w)+1.0)/2.0;; // CHANGED
 
   // Determine the (x,y) coordinates of this fragment in the light's
   // CCS in the range [0,1]x[0,1].
 
-  vec2 shadowTexCoords = vec2(((ccsLightPos.x/ccsLightPos.w)+1.0)/2.0,((ccsLightPos.y/ccsLightPos.w)+1.0)/2.0); // CHANGE THIS
+  vec2 shadowTexCoords = vec2(((ccsLightPos.x/ccsLightPos.w)+1.0)/2.0,((ccsLightPos.y/ccsLightPos.w)+1.0)/2.0); // CHANGED
 
   // Look up the depth from the light in the shadowBuffer texture.
 
-  float shadowDepth = 0.5; // texture(shadowBuffer, shadowTexCoords).rgb.x; // CHANGE THIS
+  float shadowDepth = texture(shadowBuffer, shadowTexCoords).x; // CHANGED
 
   // Determine whether the fragment is in shadow.
   //
   // If results look bad, add a bit to the shadow texture depth to
   // prevent z-fighting.
-
   // YOUR CODE HERE
+  vec3 shadowColour = colour;
+  if (fragDepth > shadowDepth+0.01)
+  {
+    shadowColour = shadowColour*0.3;
+  }
+
+
 
   // Compute illumination.  Initially just do diffuse "N dot L".  Later do Phong.
 
-  // YOUR CODE HERE
-  float NdotL = dot(lightDir,normalize(normal));
+  // DIFFUSE ILLUMINATION
+  float NdotL = dot(normalize(lightDir),normalize(normal));
   if (NdotL < 0.0) NdotL = 0.0; 
 
+  // PHONG ILLUMINATION
+  vec3 R = 2.0 * NdotL * normal - lightDir;
+  float RdotV = dot(normalize(eyePosition),normalize(R));
 
-  fragColour = vec4(NdotL,0,0,0);
+  vec3 phong = (shadowColour * NdotL * Iin + ks * Iin * pow((RdotV), shininess) + Ia + Ie);
+  fragColour = vec4(phong,1.0);
 
   // Choose the colour either from the object's texture (if
   // 'texturing' == 1) or from the input colour.
