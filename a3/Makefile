@@ -1,5 +1,8 @@
 # uncomment the -lpng12 and -DHAVEPNG if you have the png12 libraries
 # installed on Linux.
+#
+# uncomment the -lfreetype and -DUSE_FREETYPE is you have the
+# freetype2 libraries installed on Linux
 
 PROG = rt
 
@@ -7,8 +10,8 @@ OBJS =	main.o arcballWindow.o font.o scene.o sphere.o triangle.o light.o eye.o o
 	material.o texture.o vertex.o wavefrontobj.o wavefront.o bvh.o linalg.o \
 	gpuProgram.o axes.o arrow.o bbox.o glverts.o glad/src/glad.o
 
-LDFLAGS  = -Llib32 -lglfw -lGL -ldl #-lfreetype
-CXXFLAGS = -O2 -I/usr/include/freetype2 -Wall -Wno-write-strings -Wno-parentheses -Wno-unused-variable -Wno-unused-result -DLINUX -DUSE_FREETYPE #-DHAVEPNG
+LDFLAGS  = -Llib32 -lglfw -lGL -ldl # -lfreetype -lpng12
+CXXFLAGS = -g -I/usr/include/freetype2 -Wall -Wno-write-strings -Wno-parentheses -Wno-unused-variable -Wno-unused-result -DLINUX # -DUSE_FREETYPE -DHAVEPNG
 CXX      = g++
 
 $(PROG):	$(OBJS)

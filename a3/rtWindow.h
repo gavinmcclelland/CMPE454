@@ -116,6 +116,7 @@ class RTwindow : public arcballWindow {
       scene->maxDepth++;
       viewpointChanged = true;
       redisplay = true;
+      cout << "ray recursion depth " << scene->maxDepth << endl;
       break;
     case '-':
     case '_':
@@ -123,6 +124,7 @@ class RTwindow : public arcballWindow {
 	scene->maxDepth--;
 	viewpointChanged = true;
 	redisplay = true;
+	cout << "ray recursion depth " << scene->maxDepth << endl;
       }
       break;
     case '<':
@@ -131,6 +133,7 @@ class RTwindow : public arcballWindow {
 	scene->glossyIterations--;
 	viewpointChanged = true;
 	redisplay = true;
+	cout << "glossy rays: " << scene->glossyIterations << endl;
       }
       break;
     case '>':
@@ -138,6 +141,7 @@ class RTwindow : public arcballWindow {
       scene->glossyIterations++;
       viewpointChanged = true;
       redisplay = true;
+      cout << "glossy rays: " << scene->glossyIterations << endl;
       break;
     case 'O':
       scene->showObjects = !scene->showObjects;
