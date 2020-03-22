@@ -182,7 +182,7 @@ void parseOptions( int argc, char **argv )
       break;
     }
   }
-
+  
   if (next_fn == 0) {
     cerr << "No input filename provided on command line" << endl;
     abort();

@@ -22,6 +22,8 @@
 #include "material.h"
 #include "arrow.h"
 
+#include "linalg.h"
+
 
 #ifndef MAXFLOAT
   #define MAXFLOAT 9999999
@@ -200,6 +202,22 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
 
 
     // YOUR CODE HERE
+    float cone = acos(g);  // half angle of cone
+    float l = 1/tan(cone); // disc distance
+    vec3 IoutTemp = vec3(0,0,0);
+    for (int i = 0; i < glossyIterations; i++) {
+      float a = 1, b = 1;
+      do {
+        a = randIn01();
+        b = randIn01();
+      } while (a + b > 1);
+      
+      vec3 randRay = (l * R + a * R.perp1() + b * R.perp2());
+      vec3 Iin = raytrace( P, randRay, depth, objIndex, objPartIndex );
+      IoutTemp = IoutTemp + calcIout( N, R, E, E, kd, mat->ks, mat->n, Iin );
+    }
+    IoutTemp = (1/float(glossyIterations)) * IoutTemp;
+    Iout = Iout + IoutTemp;
   }
   
   // Add direct contributions from lights
@@ -281,9 +299,15 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
   float opacity = alpha * mat->alpha;
 
   if (opacity < 1.0) { // not completely opaque
-
+    vec3 revR = vec3(0,0,0) - R;
     // YOUR CODE HERE
-    //
+    vec3 refDir; 
+    vec3 Iout = mat->Ie + vec3( mat->ka.x * Ia.x, mat->ka.y * Ia.y, mat->ka.z * Ia.z );
+    if((findRefractionDirection(revR, N, refDir))) {
+      vec3 Iin = raytrace( P, R, depth, objIndex, objPartIndex );
+      vec3 Iref = raytrace( P, refDir, depth, objIndex, objPartIndex );
+      Iout = Iout + opacity * calcIout( N, R, E, E, kd, mat->ks, mat->n, Iin ) + (1 - opacity) * calcIout( N, refDir, E, E, kd, mat->ks, mat->n, Iref );
+    }
     // Use the 'findRefractionDirection' function (below).
   }
 
@@ -306,9 +330,25 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
 bool Scene::findRefractionDirection( vec3 &rayDir, vec3 &N, vec3 &refractionDir )
 
 {
-  return false;
-
+  vec3 M = 1/(N ^ (rayDir ^ N)).length() * (N ^ (rayDir ^ N)); // other coord axis
   // YOUR CODE HERE
+  float dotRN = rayDir * N;
+  if (dotRN < 0) {
+    // know ray going into the surface
+    dotRN = rayDir * (vec3(0,0,0) - N); 
+    float thetaI = acos(dotRN/rayDir.length() * N.length());
+    float thetaR = asin(1.008/1.510*sin(thetaI));
+    refractionDir = cos(thetaR) * (vec3(0,0,0) - N) + sin(thetaR) * M; 
+  } else { // going out of the surface (leaving dense medium)
+    float thetaI = acos(dotRN/rayDir.length() * N.length());
+    float thetaR = asin(1.510/1.008*sin(thetaI)); 
+    if(thetaI > asin(0.668)) {
+      return false;
+    }
+    refractionDir = cos(thetaR) * N + sin(thetaR) * M;
+  }
+  return true;
+  
 }
 
 
@@ -359,7 +399,7 @@ vec3 Scene::pixelColour( int x, int y )
 
   vec3 result;
 
-#if 1
+#if 0
 
   vec3 dir = (llCorner + (x+0.5)*right + (y+0.5)*up).normalize(); // pixel centre
 
@@ -372,7 +412,7 @@ vec3 Scene::pixelColour( int x, int y )
   // patter if 'jitter' is true.
 
   // YOUR CODE HERE
-  //
+  
   // Change the "#if 1" above to "#if 0" once your code here is ready.
 
 #endif
