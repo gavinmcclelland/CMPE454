@@ -301,6 +301,8 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
 
     // YOUR CODE HERE
     vec3 refractionDir;
+    // If total internal reflection does not occur, blend 
+    // reflection and refraction rays proportional to opacity
     if(findRefractionDirection(rayDir, N, refractionDir))
        Iout = (opacity)*Iout + (1-opacity)*raytrace(P,refractionDir, depth, objIndex, objPartIndex);
     // Use the 'findRefractionDirection' function (below).
@@ -325,24 +327,25 @@ bool Scene::findRefractionDirection( vec3 &rayDir, vec3 &N, vec3 &refractionDir 
 
 {
   // YOUR CODE HERE
-   vec3 M = 1/(N ^ (rayDir ^ N)).length() * (N ^ (rayDir ^ N)); // other coord axis
-  // YOUR CODE HERE
-  float dotRN = rayDir * N;
+   vec3 M = (N ^ (rayDir ^ N)).normalize(); // other coord axis
+  float dotRN = rayDir * N;                 // dot between R and N
   if (dotRN < 0) {
     // know ray going into the surface
-    dotRN = rayDir * (vec3(0,0,0) - N); 
+    dotRN = rayDir * (vec3(0,0,0) - N);     // flip sign of dotRN
     float thetaI = acos(dotRN/rayDir.length() * N.length());
     float thetaR = asin(1.008/1.510*sin(thetaI));
     refractionDir = cos(thetaR) * (vec3(0,0,0) - N) + sin(thetaR) * M;   
   } else { // going out of the surface (leaving dense medium)
     float thetaI = acos(dotRN/rayDir.length() * N.length());
     float thetaR = asin(1.510/1.008*sin(thetaI)); 
+    
+    // If total internal reflection occurs, return false
     if(thetaI > asin(0.668)) {
       return false;
     }
     refractionDir = cos(thetaR) * N + sin(thetaR) * M;
   }
-  return true;
+  return true; // return true if total internal reflection does not occur (i.e. modify refractionDir)
 }
 
 
@@ -401,7 +404,7 @@ vec3 Scene::pixelColour( int x, int y )
 
 #else
 
-  // Antialias through a pixel using ('numPixelSamples' x 'numPixelSamples')
+  // alias through a pixel using ('numPixelSamples' x 'numPixelSamples')
   // rays.  Use a regular pattern if 'jitter' is false; use a jittered
   // patter if 'jitter' is true.
   
