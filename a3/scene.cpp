@@ -203,18 +203,24 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
     // YOUR CODE HERE
     float cone = acos(g);  // half angle of cone
     float l = 1/tan(cone); // disc distance
+
     vec3 IoutTemp = vec3(0,0,0);
+
+    
     for (int i = 0; i < glossyIterations; i++) {
       float a = 1, b = 1;
+      // get an a, b coord within the circle, while providing equal probability of all points
       do {
         a = randIn01();
         b = randIn01();
       } while (a + b > 1);
       
+      // calc random ray and add it to Iout
       vec3 randRay = (l * R + a * R.perp1() + b * R.perp2());
       vec3 Iin = raytrace( P, randRay, depth, objIndex, objPartIndex );
       IoutTemp = IoutTemp + calcIout( N, R, E, E, kd, mat->ks, mat->n, Iin );
     }
+    // average all random ray components
     IoutTemp = (1/float(glossyIterations)) * IoutTemp;
     Iout = Iout + IoutTemp;
   }
