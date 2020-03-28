@@ -22,8 +22,6 @@
 #include "material.h"
 #include "arrow.h"
 
-#include "linalg.h"
-
 
 #ifndef MAXFLOAT
   #define MAXFLOAT 9999999
@@ -299,18 +297,13 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
   float opacity = alpha * mat->alpha;
 
   if (opacity < 1.0) { // not completely opaque
-    vec3 revR = vec3(0,0,0) - R;
+
     // YOUR CODE HERE
-    vec3 refDir; 
-    vec3 Iout = mat->Ie + vec3( mat->ka.x * Ia.x, mat->ka.y * Ia.y, mat->ka.z * Ia.z );
-    if((findRefractionDirection(revR, N, refDir))) {
-      vec3 Iin = raytrace( P, R, depth, objIndex, objPartIndex );
-      vec3 Iref = raytrace( P, refDir, depth, objIndex, objPartIndex );
-      Iout = Iout + opacity * calcIout( N, R, E, E, kd, mat->ks, mat->n, Iin ) + (1 - opacity) * calcIout( N, refDir, E, E, kd, mat->ks, mat->n, Iref );
-    }
+    vec3 refractionDir;
+    if(findRefractionDirection(rayDir, N, refractionDir))
+       Iout = (opacity)*Iout + (1-opacity)*raytrace(P,refractionDir, depth, objIndex, objPartIndex);
     // Use the 'findRefractionDirection' function (below).
   }
-
   return Iout;
 }
 
@@ -330,7 +323,8 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
 bool Scene::findRefractionDirection( vec3 &rayDir, vec3 &N, vec3 &refractionDir )
 
 {
-  vec3 M = 1/(N ^ (rayDir ^ N)).length() * (N ^ (rayDir ^ N)); // other coord axis
+  // YOUR CODE HERE
+   vec3 M = 1/(N ^ (rayDir ^ N)).length() * (N ^ (rayDir ^ N)); // other coord axis
   // YOUR CODE HERE
   float dotRN = rayDir * N;
   if (dotRN < 0) {
@@ -348,7 +342,6 @@ bool Scene::findRefractionDirection( vec3 &rayDir, vec3 &N, vec3 &refractionDir 
     refractionDir = cos(thetaR) * N + sin(thetaR) * M;
   }
   return true;
-  
 }
 
 
@@ -399,7 +392,7 @@ vec3 Scene::pixelColour( int x, int y )
 
   vec3 result;
 
-#if 0
+#if 1
 
   vec3 dir = (llCorner + (x+0.5)*right + (y+0.5)*up).normalize(); // pixel centre
 
@@ -412,7 +405,7 @@ vec3 Scene::pixelColour( int x, int y )
   // patter if 'jitter' is true.
 
   // YOUR CODE HERE
-  
+  //
   // Change the "#if 1" above to "#if 0" once your code here is ready.
 
 #endif
