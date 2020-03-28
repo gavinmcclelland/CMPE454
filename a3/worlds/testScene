@@ -47,6 +47,19 @@ material
   -           # texture filename
   -           # bump map filename (- means none)
 
+  material
+  red         # name
+  0.1 0 0     # ambient reflectivity (Ka)
+  .7 0 0      # diffuse reflectivity (Kd)
+  .3 .3 .3    # specular reflectivity (Ks)
+  200         # shininess (n)
+  1           # glossiness (g)
+  0 0 0       # emission (Ie)
+  1           # opacity (alpha)
+  -           # texture filename (- means none)
+  -           # bump map filename (- means none)
+
+
 # stained glass window
 
 triangle
@@ -92,61 +105,66 @@ triangle                 # bottom oriented downward
   glass
 
 triangle                 # top
-  0 0.5 1.2
-  0 0 1.2
-  0.5 0 1.2
+  0 0.5 0.7
+  0 0 0.7
+  0.5 0 0.7
   glass
 
 triangle                 # top
-  0.5 0.5 1.2
-  0 0.5 1.2
-  0.5 0 1.2
+  0.5 0.5 0.7
+  0 0.5 0.7
+  0.5 0 0.7
   glass
 
 triangle                 # side
-  0 0.5 1.2
+  0 0.5 0.7
   0 0.5 0.2
-  0.5 0.5 1.2
+  0.5 0.5 0.7
   glass
 
 triangle                 # side
   0 0.5 0.2
   0.5 0.5 0.2
-  0.5 0.5 1.2
+  0.5 0.5 0.7
   glass
 
 triangle                 # side
-  0 0.5 1.2
+  0 0.5 0.7
   0 0 0.2
-  0 0 1.2
+  0 0 0.7
   glass
 
 triangle                 # side
-  0 0.5 1.2
+  0 0.5 0.7
   0 0.5 0.2
   0 0 0.2
   glass
 
 triangle                 # side
-  0.5 0.5 1.2
+  0.5 0.5 0.7
   0.5 0 0.2
-  0.5 0 1.2
+  0.5 0 0.7
   glass
 
 triangle                 # side
-  0.5 0.5 1.2
+  0.5 0.5 0.7
   0.5 0.5 0.2
   0.5 0 0.2
   glass
 
 triangle                 # side
-  0 0 1.2
+  0 0 0.7
   0 0 0.2
-  0.5 0 1.2
+  0.5 0 0.7
   glass
 
 triangle                 # side
   0 0 0.2
   0.5 0 0.2
-  0.5 0 1.2
+  0.5 0 0.7
   glass
+
+sphere
+  1           # radius
+  1 2 0       # centre
+  red         # material name
