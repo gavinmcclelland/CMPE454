@@ -404,26 +404,24 @@ vec3 Scene::pixelColour( int x, int y )
   // Antialias through a pixel using ('numPixelSamples' x 'numPixelSamples')
   // rays.  Use a regular pattern if 'jitter' is false; use a jittered
   // patter if 'jitter' is true.
-
-
-
   
     result = vec3(0,0,0);
-    int square = numPixelSamples * numPixelSamples;
+    int square = numPixelSamples * numPixelSamples; // Calculate the square to determine the weight to divide each ray colour by
     for (int i = 0; i < numPixelSamples; i++)
     {
       for (int n = 0; n < numPixelSamples; n++)
     {
       vec3 dir;
       if (jitter)
+        // Take random samples from the pixel split into sectors based on numPixSample and the i, n values
         dir = (llCorner + (x+1.0/numPixelSamples * (i + randIn01()))*right + (y+1.0/numPixelSamples * (n + randIn01()))*up).normalize();
       else
         dir = (llCorner + (x+randIn01())*right + (y+randIn01())*up).normalize(); // random point in pixel
+      // Balance the weighting of each colour sample
       result = result + 1.0/square * raytrace( eye->position, dir, 0, -1, -1 );
     }
   }
-  // YOUR CODE HERE
-  //
+  
   // Change the "#if 1" above to "#if 0" once your code here is ready.
 
 #endif
