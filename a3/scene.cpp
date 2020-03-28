@@ -23,6 +23,7 @@
 #include "arrow.h"
 
 
+
 #ifndef MAXFLOAT
   #define MAXFLOAT 9999999
 #endif
@@ -332,7 +333,7 @@ bool Scene::findRefractionDirection( vec3 &rayDir, vec3 &N, vec3 &refractionDir 
     dotRN = rayDir * (vec3(0,0,0) - N); 
     float thetaI = acos(dotRN/rayDir.length() * N.length());
     float thetaR = asin(1.008/1.510*sin(thetaI));
-    refractionDir = cos(thetaR) * (vec3(0,0,0) - N) + sin(thetaR) * M; 
+    refractionDir = cos(thetaR) * (vec3(0,0,0) - N) + sin(thetaR) * M;   
   } else { // going out of the surface (leaving dense medium)
     float thetaI = acos(dotRN/rayDir.length() * N.length());
     float thetaR = asin(1.510/1.008*sin(thetaI)); 
@@ -392,7 +393,7 @@ vec3 Scene::pixelColour( int x, int y )
 
   vec3 result;
 
-#if 1
+#if 0
 
   vec3 dir = (llCorner + (x+0.5)*right + (y+0.5)*up).normalize(); // pixel centre
 
@@ -404,6 +405,23 @@ vec3 Scene::pixelColour( int x, int y )
   // rays.  Use a regular pattern if 'jitter' is false; use a jittered
   // patter if 'jitter' is true.
 
+
+
+  
+    result = vec3(0,0,0);
+    int square = numPixelSamples * numPixelSamples;
+    for (int i = 0; i < numPixelSamples; i++)
+    {
+      for (int n = 0; n < numPixelSamples; n++)
+    {
+      vec3 dir;
+      if (jitter)
+        dir = (llCorner + (x+1.0/numPixelSamples * (i + randIn01()))*right + (y+1.0/numPixelSamples * (n + randIn01()))*up).normalize();
+      else
+        dir = (llCorner + (x+randIn01())*right + (y+randIn01())*up).normalize(); // random point in pixel
+      result = result + 1.0/square * raytrace( eye->position, dir, 0, -1, -1 );
+    }
+  }
   // YOUR CODE HERE
   //
   // Change the "#if 1" above to "#if 0" once your code here is ready.
